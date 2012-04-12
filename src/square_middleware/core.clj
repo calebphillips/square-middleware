@@ -1,7 +1,6 @@
 (ns square-middleware.core
   (:use compojure.core)
-  (:require [compojure.route :as route]
-            [compojure.handler :as handler]))
+  (:require [compojure.handler :as handler]))
 
 (def window-size 10)
 (defn full-window? [r] (= window-size (count r)))
@@ -18,8 +17,8 @@
                      :validator #(<= (count %) window-size)))
 
 (defn log-stats [responses]
-  (let [a (avg responses)
-        v (variance responses a)]
+  (let [a (double (avg responses))
+        v (double (variance responses a))]
     (println (str "Average: " a " Variance: " v))))
 
 (add-watch
@@ -38,10 +37,17 @@
 (defn record-response [new-response]
   (swap! responses add-response new-response))
 
-(defroutes main-routes
-  (GET "/:id" [id] (str "<h1>Hello World Wide Web!</h1><h2>It's " id "</h2>")))
+(def statuses (mapcat #(apply range %) [[200 207] [300 307] [400 417] [500 505]]))
+(def rand-status #(rand-nth statuses))
 
-(defn wrap-count-status [handler]
+(defn create-response [id]
+  {:status (rand-status)
+   :body (str "<h1>Got request from " id "</h1>")})
+
+(defroutes main-routes
+  (ANY "/locations/:id" [id] (create-response id)))
+
+(defn wrap-status-logger [handler]
   (fn [request]
     (let [response (handler request)]
       (record-response (:status response))
@@ -49,5 +55,5 @@
 
 (def app
   (->
-   (handler/site main-routes)
-   (wrap-count-status)))
+   (handler/api main-routes)
+   (wrap-status-logger)))
