@@ -34,8 +34,11 @@
             responses)]
     (conj v new-response)))
 
+(defn trunc-to-hundreds [n]
+  (-> n (quot 100) (* 100)))
+
 (defn record-response [new-response]
-  (swap! responses add-response new-response))
+  (swap! responses add-response (trunc-to-hundreds new-response)))
 
 (def statuses (mapcat #(apply range %) [[200 207] [300 307] [400 417] [500 505]]))
 (def rand-status #(rand-nth statuses))
