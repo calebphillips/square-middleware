@@ -14,8 +14,8 @@
                      :validator #(<= (count %) window-size)))
 
 (defn log-stats [responses]
-  (let [a (double (avg responses))
-        v (double (variance responses a))]
+  (let [a (avg responses)
+        v (variance responses a)]
     (println (str "Average: " a " Variance: " v))))
 
 (add-watch
