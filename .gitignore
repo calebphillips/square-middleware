@@ -1,9 +1,10 @@
 /pom.xml
-*jar
+square-middleware-1.0.0-SNAPSHOT.jar
 /lib
 /classes
 /native
 /.lein-failures
 /checkouts
 /.lein-deps-sum
-/.lein-plugins/checksum
+/.lein-plugins
+/.lein-plugins
