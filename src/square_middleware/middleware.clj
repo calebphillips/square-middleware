@@ -24,7 +24,14 @@
 (defn fmt [n]
   (format "%.2f" (double n)))
 
-(defn log-stats [status-codes]
+(defn log-stats
+  "Takes a list of status codes - [401 500 200 302],
+   truncates them - [400 400 200 300], then prints the average and the variance
+   to STDOUT.
+
+   I am hoping this is what was meant by 'log the moving average and variance of
+   the response status codes grouped by their class (2xx, 4xx, etc).'"
+  [status-codes]
   (let [truncd (map trunc-to-hundreds status-codes)
         a (avg truncd)
         v (variance truncd a)]
@@ -40,7 +47,7 @@
      (log-stats new-value))))
 
 (defn add-status
-  "Add the new status to the list of status, sliding the window
+  "Add the new status to the list of status codes, sliding the window
   forward as necessary"
   [status-codes new-status]
   (let [v (if (full-window? status-codes)
