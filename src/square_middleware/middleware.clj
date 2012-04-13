@@ -21,11 +21,14 @@
   [n]
   (-> n (quot 100) (* 100)))
 
+(defn fmt [n]
+  (format "%.2f" (double n)))
+
 (defn log-stats [status-codes]
   (let [truncd (map trunc-to-hundreds status-codes)
         a (avg truncd)
         v (variance truncd a)]
-    (println (str "Average: " a " Variance: " v))))
+    (println (str "Average: " (fmt a) " Variance: " (fmt v)))))
 
 ;; Watch the status-codes atom for changes and once the list has
 ;; reached the window size we want to report on, log the stats
