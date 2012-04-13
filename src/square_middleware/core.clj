@@ -1,6 +1,7 @@
 (ns square-middleware.core
   (:use [compojure.core :only [defroutes ANY]])
   (:require [compojure.handler :as handler]
+            [compojure.route :as route]
             [square-middleware.middleware :as mw]
             [ring.adapter.jetty :as ring]
             [ring.middleware.basic-authentication :as auth])
@@ -14,7 +15,8 @@
    :body (str "<h1>Got request from " id "</h1>")})
 
 (defroutes main-routes
-  (ANY "/locations/:id" [id] (create-response id)))
+  (ANY "/locations/:id" [id] (create-response id))
+  (route/not-found "Page not found"))
 
 (defn authenticated? [username password]
   (and
@@ -24,8 +26,8 @@
 (def app
   (->
    (handler/api main-routes)
-   (mw/wrap-status-logger)
-   (auth/wrap-basic-authentication authenticated?)))
+   (auth/wrap-basic-authentication authenticated?)
+   (mw/wrap-status-logger)))
 
 (def ssl-port 8443)
 
