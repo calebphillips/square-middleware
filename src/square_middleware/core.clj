@@ -31,8 +31,11 @@
 
 (def ssl-port 8443)
 
-;; Found this here: http://practice.kokonino.net/posts/ring-with-ssl-only
-(defn remove-non-ssl-connectors [server]
+(defn remove-non-ssl-connectors
+  "Get rid of any connectors other than the one we configured on ssl-port.
+
+   Found this idea here: http://practice.kokonino.net/posts/ring-with-ssl-only"
+  [server]
   (doseq [c (filter identity (.getConnectors server))]
     (when (not= ssl-port (.getPort c))
       (.removeConnector server c))))
