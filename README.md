@@ -2,7 +2,7 @@
 
 Implementation of the problem described here https://squareup.com/jobs/ohExVfw7
 
-Includes an HTTP service:
+Includes an HTTP service that:
 
 * Is available only over HTTPS
 * Requires Basic Authentication (hard coded username/password = fred/flintstone)
