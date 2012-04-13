@@ -2,7 +2,8 @@
   (:use [compojure.core :only [defroutes ANY]])
   (:require [compojure.handler :as handler]
             [square-middleware.middleware :as mw]
-            [ring.adapter.jetty :as ring])
+            [ring.adapter.jetty :as ring]
+            [ring.middleware.basic-authentication :as auth])
   (:gen-class))
 
 (def statuses (mapcat #(apply range %) [[200 207] [300 307] [400 417] [500 505]]))
@@ -15,10 +16,16 @@
 (defroutes main-routes
   (ANY "/locations/:id" [id] (create-response id)))
 
+(defn authenticated? [username password]
+  (and
+   (= "fred" username)
+   (= "flintstone" password)))
+
 (def app
   (->
    (handler/api main-routes)
-   (mw/wrap-status-logger)))
+   (mw/wrap-status-logger)
+   (auth/wrap-basic-authentication authenticated?)))
 
 (def ssl-port 8443)
 
